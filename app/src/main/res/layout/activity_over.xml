@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="앞번호" />
+
+        <EditText
+            android:id="@+id/overPlateEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="번호판 앞부분" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="뒷번호" />
+
+        <EditText
+            android:id="@+id/overNumberEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="번호판 숫자 네자리"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="안내문" />
+
+        <EditText
+            android:id="@+id/overInfoEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="시간" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="경고문" />
+
+        <EditText
+            android:id="@+id/overWaringEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="시간" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="연락처" />
+
+        <EditText
+            android:id="@+id/overPhoneNumberEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="연락처"
+            android:inputType="phone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="위   치" />
+
+        <EditText
+            android:id="@+id/overLocationEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="위치" />
+    </LinearLayout>
+</LinearLayout>

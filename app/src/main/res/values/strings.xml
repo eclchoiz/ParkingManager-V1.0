@@ -1,0 +1,98 @@
+<resources>
+    <string name="app_name">주차관리</string>
+    <string name="action_settings">셋팅</string>
+
+    <string name="search_title">검색</string>
+    <string name="search_hint">차량 번호, 이름 등등</string>
+
+    <string name="mms_select">전송 문자 선택</string>
+
+    <!--<string name="mms_not_register_car_title">외부차량 장기주차</string>-->
+    <string name="mms_not_register_car">
+        이마트 일산점 주차관리팀입니다.\n\n
+        귀 차량은 3시간 이상 장기주차중입니다.\n
+        상가 고객의 원활한 주차장 이용을 위해 장시간 주차를 금지합니다. 빠른 출차 바랍니다.\n
+        4시간 이상 주차시 단속 스티커 부착합니다.\n\n
+        감사합니다.
+    </string>
+
+    <!--<string name="mms_no_register_card_title">직원차량 주차증없음</string>-->
+    <string name="mms_no_register_card">
+        이마트 일산점 주차관리팀입니다.\n\n
+        등록 차량이더라도 주차증이 없는 차량은 일반 차량과 동일하게 장기/숙박주차시 단속 스티커 부착 대상이 됩니다.\n
+        이점 유의하시기 바랍니다.\n\n
+        감사합니다.
+    </string>
+
+    <!--<string name="mms_wrong_place_title">직원차량 주차구역</string>-->
+    <string name="mms_wrong_place">
+        이마트 일산점 주차관리팀입니다.\n\n
+        직원 및 입점 차량 주차 구역은 F, G 구역입니다.\n
+        고객들의 원활한 주차장 이용을 위해 협조 바랍니다.\n\n
+        감사합니다.
+    </string>
+
+    <string name="mms_send">전송</string>
+    <string name="mms_cancel">취소</string>
+
+
+    <!-- Label for overflow menu option that deletes all pet data in the app [CHAR LIMIT=20] -->
+    <string name="action_delete_all_entries">모두 삭제</string>
+
+    <!-- Title for the activity to add a new pet [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_new_data">추가</string>
+
+    <!-- Title for the activity to edit an existing pet [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_edit_data">수정</string>
+
+    <string name="action_save">저장</string>
+
+    <string name="action_import_db">DB 불러오기</string>
+
+    <!-- Label for overflow menu option that inserts fake pet data into the app [CHAR LIMIT=20] -->
+    <string name="action_insert_dummy_data">예제 추가</string>
+
+    <!-- Label for editor overflow menu option that deletes the current pet [CHAR LIMIT=20] -->
+    <string name="action_delete">Delete</string>
+
+    <!-- Toast message in editor when new pet has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_data_successful">저장 됨</string>
+
+    <!-- Toast message in editor when new pet has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_data_failed">저장 실패</string>
+
+    <!-- Toast message in editor when current pet was successfully updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_data_successful">업데이트 됨</string>
+
+    <!-- Toast message in editor when current pet has failed to be updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_data_failed">업데이트 실패</string>
+
+    <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
+    <string name="unsaved_changes_dialog_msg">수정중인 것을 무시하고 그만 둘까요?</string>
+
+    <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
+    <string name="discard">수정 취소</string>
+
+    <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
+    <string name="keep_editing">계속 수정</string>
+
+    <!-- Toast message in editor when current pet was successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_data_successful">삭제 됨</string>
+
+    <!-- Toast message in editor when current pet has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_data_failed">삭제 실패</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_msg">삭제할까요?</string>
+
+    <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
+    <string name="delete">삭제</string>
+
+    <!-- Dialog button text for the option to cancel deletion of the current pet [CHAR LIMIT=20] -->
+    <string name="cancel">취소</string>
+
+    <string name="no_phone_number">연락처가 없습니다.</string>
+
+    <string name="title_activity_editor">EditorActivity</string>
+
+</resources>
