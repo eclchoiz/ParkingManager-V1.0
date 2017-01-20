@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">직원주차관리</string>
+    <string name="app_name">장기주차관리</string>
     <string name="action_settings">셋팅</string>
 
     <string name="search_title">검색</string>
-    <string name="search_hint">차량 번호 숫자 네자리</string>
+    <string name="search_hint">차량 번호, 이름 등등</string>
 
     <string name="mms_select">전송 문자 선택</string>
 

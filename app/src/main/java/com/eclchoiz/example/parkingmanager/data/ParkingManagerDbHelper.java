@@ -24,6 +24,7 @@ public class ParkingManagerDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_ENTRIES =
                 "CREATE TABLE IF NOT EXISTS " + ManagerEntry.TABLE_NAME + " (" +
                         ManagerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        ManagerEntry.COLUMN_NAME_KEY + " TEXT NOT NULL, " +
                         ManagerEntry.COLUMN_NAME_PART + " TEXT NOT NULL, " +
                         ManagerEntry.COLUMN_NAME_NAME+ " TEXT, " +
                         ManagerEntry.COLUMN_NAME_PLATE + " TEXT, " +

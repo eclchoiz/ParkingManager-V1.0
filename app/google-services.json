@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "101844421491",
+    "firebase_url": "https://parkingmanager-785c5.firebaseio.com",
+    "project_id": "parkingmanager-785c5",
+    "storage_bucket": "parkingmanager-785c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101844421491:android:824c625188ee87fe",
+        "android_client_info": {
+          "package_name": "com.eclchoiz.example.parkingmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "101844421491-e5qh6ekc2s49ueh7k5v6tguhcc2070gd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eclchoiz.example.parkingmanager",
+            "certificate_hash": "E795F83E7BBF19F04E56DEE3D2F4F613864100B4"
+          }
+        },
+        {
+          "client_id": "101844421491-5dbivj9j21i0d8rn16ktt825qsikqtd4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS2P6IaZne7tOlRBmj0-4ILz0596nnzww"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "101844421491-5dbivj9j21i0d8rn16ktt825qsikqtd4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

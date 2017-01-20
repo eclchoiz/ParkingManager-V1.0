@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.service.carrier.CarrierService;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -35,7 +34,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eclchoiz.example.parkingmanager.data.ParkingDataObject;
 import com.eclchoiz.example.parkingmanager.data.ParkingMangerContract.ManagerEntry;
+import com.eclchoiz.example.parkingmanager.utils.FireBaseUtils;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +54,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int MANAGER_LOADER = 0;
     private static final int REQUEST_CODE_FOR_PHONE_CALL = 123;
     private static final int REQUEST_CODE_FOR_SEND_MMS = 456;
+
+    private static final String PARKING_BASE_NODE = "parking";
+
+    private DatabaseReference mDatabaseReference;
+    ValueEventListener mValueEventListener;
+
     ParkingManagerCursorAdapter mCursorAdapter;
+
     String mPhoneNumber;
     String mMessage;
     String mCursorFilter;
@@ -64,10 +77,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                Intent intent = new Intent(MainActivity.this, ParkingActivity.class);
                 startActivity(intent);
             }
         });
+
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(PARKING_BASE_NODE);
 
         ListView managerListView = (ListView) findViewById(R.id.list);
 
@@ -77,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         managerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                Intent intent = new Intent(MainActivity.this, ParkingActivity.class);
 
                 Uri currentManagerUri = ContentUris.withAppendedId(ManagerEntry.CONTENT_URI, id);
                 intent.setData(currentManagerUri);
@@ -85,7 +100,186 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+        mValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Log.e("dataSnapshot", snapshot.toString());
+                    String key = snapshot.getKey();
+                    boolean result = FireBaseUtils.isNew(key, getApplicationContext());
+                    if (result) {
+                        ParkingDataObject dataObject = snapshot.getValue(ParkingDataObject.class);
+                        dataObject.setKey(key);
+                        FireBaseUtils.insertSqlLiteWithObject(dataObject, getApplicationContext());
+                        Log.e("MainActivity", "새로운 데이터 입니다." + key);
+                    } else {
+//                        Log.e("MainActivity", "중복된 데이터 입니다.");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+//        mDatabaseReference.orderByValue().limitToLast(LIST_LIMIT).addValueEventListener(mValueEventListener);
+
+        mDatabaseReference.orderByValue().addValueEventListener(mValueEventListener);
         getLoaderManager().initLoader(MANAGER_LOADER, null, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // SearchView를 등록하고 리스너를 등록하기.
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setQueryHint(getString(R.string.search_hint));
+        searchView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String newText) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mCursorFilter = !TextUtils.isEmpty(newText) ? newText : null;
+                getLoaderManager().restartLoader(0, null, MainActivity.this);
+                return true;
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_insert_dummy_data:
+                insertDummy();
+                return true;
+            case R.id.action_delete_all_entries:
+                deleteAllCars();
+                return true;
+            case R.id.action_import_db:
+                importDB();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAllCars() {
+        mDatabaseReference.getRoot().removeValue();
+        int rowsDeleted = getContentResolver().delete(ManagerEntry.CONTENT_URI, null, null);
+    }
+
+    private void insertDummy() {
+        ContentValues values = new ContentValues();
+        values.put(ManagerEntry.COLUMN_NAME_PART, "이마트");
+        values.put(ManagerEntry.COLUMN_NAME_NAME, "최진원");
+        values.put(ManagerEntry.COLUMN_NAME_PLATE, "32노");
+        values.put(ManagerEntry.COLUMN_NAME_NUMBER, "2288");
+        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, "e-74");
+        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "010-9913-4131");
+        values.put(ManagerEntry.COLUMN_NAME_KEY, FireBaseUtils.insertFireBaseWithValues(values, mDatabaseReference));
+
+//        Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
+    }
+
+    // CSV 파일을 읽어 DB에 저장하기
+    private void importDB() {
+
+        deleteAllCars();
+
+        try {
+            InputStreamReader is = new InputStreamReader(getAssets().open("working_csv.txt")); // assets 폴더의 파일 읽기
+
+            BufferedReader reader = new BufferedReader(is);
+            reader.readLine();
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] str = line.split(",");
+                int size = str.length;
+                ContentValues values = new ContentValues();
+
+                switch (size) {
+                    case 9:
+                    case 8:
+                    case 7:
+                    case 6:
+                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, str[4]);
+                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, str[5]);
+                        break;
+                    case 5:
+                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, str[4]);
+                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "");
+                        break;
+                    case 4:
+                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, "");
+                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "");
+                        break;
+                }
+
+                values.put(ManagerEntry.COLUMN_NAME_PART, str[0]);
+                values.put(ManagerEntry.COLUMN_NAME_NAME, str[1]);
+                values.put(ManagerEntry.COLUMN_NAME_PLATE, str[2]);
+                values.put(ManagerEntry.COLUMN_NAME_NUMBER, str[3]);
+                values.put(ManagerEntry.COLUMN_NAME_KEY, FireBaseUtils.insertFireBaseWithValues(values, mDatabaseReference));
+
+//                Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String selectionClause = null;
+        String[] selectionArgs = null;
+        Uri baseUri = ManagerEntry.CONTENT_URI;
+        String queryOrder = ManagerEntry.COLUMN_NAME_NUMBER + " ASC";
+
+        if (mCursorFilter != null) {
+            selectionClause = ManagerEntry.COLUMN_NAME_NUMBER + " like ?";
+            selectionArgs = new String[]{"%" + mCursorFilter + "%"};
+        }
+
+        String[] projection = {
+                ManagerEntry._ID,
+                ManagerEntry.COLUMN_NAME_KEY,
+                ManagerEntry.COLUMN_NAME_PART,
+                ManagerEntry.COLUMN_NAME_NAME,
+                ManagerEntry.COLUMN_NAME_PLATE,
+                ManagerEntry.COLUMN_NAME_NUMBER,
+                ManagerEntry.COLUMN_NAME_REG_NUMBER,
+                ManagerEntry.COLUMN_NAME_PHONE_NUMBER};
+
+        return new CursorLoader(this,
+                baseUri,
+                projection,
+                selectionClause,
+                selectionArgs,
+                queryOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mCursorAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 
     // 전화 걸기 관련 시작
@@ -143,15 +337,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public void selectMMS(int id) {
 
+        /*
+    <item>직원차량 주차구역 위반</item>     mms_wrong_place       0
+    <item>직원차량 주차증없음</item>        mms_no_register_card  1
+
+    <item>불량 주차</item>                 mms_wrong_parking     2
+    <item>외부차량 장기주차</item>          mms_overtime_parking  3
+*/
+
         switch (id) {
             case 0:
-                mMessage = getString(R.string.mms_not_register_car);
+                mMessage = getString(R.string.mms_wrong_place);
                 break;
             case 1:
                 mMessage = getString(R.string.mms_no_register_card);
                 break;
             case 2:
-                mMessage = getString(R.string.mms_wrong_place);
+                mMessage = getString(R.string.mms_wrong_parking);
                 break;
             default:
                 mMessage = null;
@@ -209,152 +411,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             default:
                 break;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // SearchView를 등록하고 리스너를 등록하기.
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setInputType(InputType.TYPE_CLASS_NUMBER);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String newText) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mCursorFilter = !TextUtils.isEmpty(newText) ? newText : null;
-                getLoaderManager().restartLoader(0, null, MainActivity.this);
-                return true;
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_insert_dummy_data:
-                insertDummy();
-                return true;
-            case R.id.action_delete_all_entries:
-                deleteAllCars();
-                return true;
-            case R.id.action_import_db:
-                importDB();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void deleteAllCars() {
-        int rowsDeleted = getContentResolver().delete(ManagerEntry.CONTENT_URI, null, null);
-    }
-
-    private void insertDummy() {
-        ContentValues values = new ContentValues();
-        values.put(ManagerEntry.COLUMN_NAME_PART, "이마트");
-        values.put(ManagerEntry.COLUMN_NAME_NAME, "최진원");
-        values.put(ManagerEntry.COLUMN_NAME_PLATE, "32노");
-        values.put(ManagerEntry.COLUMN_NAME_NUMBER, "2288");
-        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, "e-74");
-        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "010-9913-4131");
-
-        Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
-    }
-
-    // CSV 파일을 읽어 DB에 저장하기
-    private void importDB() {
-
-        deleteAllCars();
-
-        try {
-            InputStreamReader is = new InputStreamReader(getAssets().open("working_csv.txt")); // assets 폴더의 파일 읽기
-
-            BufferedReader reader = new BufferedReader(is);
-            reader.readLine();
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] str = line.split(",");
-                int size = str.length;
-                ContentValues values = new ContentValues();
-
-                switch (size) {
-                    case 9:
-                    case 8:
-                    case 7:
-                    case 6:
-                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, str[4]);
-                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, str[5]);
-                        break;
-                    case 5:
-                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, str[4]);
-                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "");
-                        break;
-                    case 4:
-                        values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, "");
-                        values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "");
-                        break;
-                }
-
-                values.put(ManagerEntry.COLUMN_NAME_PART, str[0]);
-                values.put(ManagerEntry.COLUMN_NAME_NAME, str[1]);
-                values.put(ManagerEntry.COLUMN_NAME_PLATE, str[2]);
-                values.put(ManagerEntry.COLUMN_NAME_NUMBER, str[3]);
-
-                Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selectionClause = null;
-        String[] selectionArgs = null;
-        Uri baseUri = ManagerEntry.CONTENT_URI;
-
-        if (mCursorFilter != null) {
-            selectionClause = ManagerEntry.COLUMN_NAME_NUMBER + " like ?";
-            selectionArgs = new String[]{"%" + mCursorFilter + "%"};
-        }
-
-        String[] projection = {
-                ManagerEntry._ID,
-                ManagerEntry.COLUMN_NAME_PART,
-                ManagerEntry.COLUMN_NAME_NAME,
-                ManagerEntry.COLUMN_NAME_PLATE,
-                ManagerEntry.COLUMN_NAME_NUMBER,
-                ManagerEntry.COLUMN_NAME_REG_NUMBER,
-                ManagerEntry.COLUMN_NAME_PHONE_NUMBER};
-
-        return new CursorLoader(this,
-                baseUri,
-                projection,
-                selectionClause,
-                selectionArgs,
-                null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mCursorAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
     }
 }

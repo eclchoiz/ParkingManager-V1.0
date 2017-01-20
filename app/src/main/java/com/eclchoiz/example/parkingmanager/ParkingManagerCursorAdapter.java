@@ -19,21 +19,21 @@ public class ParkingManagerCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.new_list_item, parent, false);
+        return LayoutInflater.from(context).inflate(R.layout.parking_list_item, parent, false);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
         TextView partTextView = (TextView) view.findViewById(R.id.partText);
-//        TextView nameTextView = (TextView) view.findViewById(R.id.nameText);
         TextView plateTextView = (TextView) view.findViewById(R.id.plateText);
         TextView numberTextView = (TextView) view.findViewById(R.id.numberText);
-//        TextView regNumberTextView = (TextView) view.findViewById(R.id.regNumber);
-        TextView phoneNumberTextView = (TextView) view.findViewById(R.id.phoneNumber);
+        TextView keyTextView = (TextView) view.findViewById(R.id.keyParkTextView);
+
         ImageView phoneCallImageView = (ImageView) view.findViewById(R.id.phoneCall);
         ImageView mmsSendImageView = (ImageView) view.findViewById(R.id.sendMessage);
 
+        int keyColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_KEY);
         int partColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_PART);
         int nameColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_NAME);
         int plateColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_PLATE);
@@ -41,6 +41,7 @@ public class ParkingManagerCursorAdapter extends CursorAdapter {
         int regNumberColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_REG_NUMBER);
         int phoneNumberColumnIndex = cursor.getColumnIndex(ManagerEntry.COLUMN_NAME_PHONE_NUMBER);
 
+        String key = cursor.getString(keyColumnIndex);
         String part = cursor.getString(partColumnIndex);
         String name = cursor.getString(nameColumnIndex);
         String plate = cursor.getString(plateColumnIndex);
@@ -61,10 +62,8 @@ public class ParkingManagerCursorAdapter extends CursorAdapter {
         }
 
         partTextView.setText(part);
-//        nameTextView.setText(name);
         plateTextView.setText(plate);
         numberTextView.setText(number);
-//        regNumberTextView.setText(regNumber);
-        phoneNumberTextView.setText(phoneNumber);
+        keyTextView.setText(key);
     }
 }

@@ -44,14 +44,14 @@ public class ParkingManagerProvider extends ContentProvider {
         Cursor cursor;
 
         int match = sUriMatcher.match(uri);
-        Log.e("uriMatcher", "sUriMatcher : " + match);
+//        Log.e("uriMatcher", "sUriMatcher : " + match);
         switch (match) {
             case MANAGER:
                 cursor = database.query(ManagerEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
             case MANAGER_ID:
-                selection = ManagerEntry._ID + "=?";
+                selection = ManagerEntry._ID + " = ?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
 
                 cursor = database.query(ManagerEntry.TABLE_NAME, projection, selection, selectionArgs,
@@ -161,7 +161,7 @@ public class ParkingManagerProvider extends ContentProvider {
                 rowsDeleted = database.delete(ManagerEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             case MANAGER_ID:
-                selection = ManagerEntry._ID + "=?";
+                selection = ManagerEntry._ID + " = ?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 rowsDeleted = database.delete(ManagerEntry.TABLE_NAME, selection, selectionArgs);
                 break;
