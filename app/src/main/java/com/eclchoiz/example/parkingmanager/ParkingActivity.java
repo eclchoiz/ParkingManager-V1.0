@@ -23,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eclchoiz.example.parkingmanager.data.ParkingMangerContract.ManagerEntry;
-import com.eclchoiz.example.parkingmanager.utils.FireBaseUtils;
+import com.eclchoiz.example.parkingmanager.utils.ParkingUtils;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -75,7 +75,7 @@ public class ParkingActivity extends AppCompatActivity implements
         mNumberEditText = (EditText) findViewById(R.id.numberEdit);
         mRegNumberEditText = (EditText) findViewById(R.id.regNumberEdit);
         mPhoneNumberEditText = (EditText) findViewById(R.id.phoneNumberEdit);
-        mDbSaveButton = (Button) findViewById(R.id.dbParkingCancel);
+        mDbSaveButton = (Button) findViewById(R.id.dbParkingSave);
 
         mPartEditText.setOnTouchListener(mTouchListener);
         mNameEditText.setOnTouchListener(mTouchListener);
@@ -161,16 +161,7 @@ public class ParkingActivity extends AppCompatActivity implements
         values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, phoneNumber);
 
         if (mCurrentManagerUri == null) {
-            mDatabaseReference.push().setValue(FireBaseUtils.valueToObject(values));
-//            Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
-//
-//            if (newUri == null) {
-//                Toast.makeText(this, getString(R.string.editor_insert_data_failed),
-//                        Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, getString(R.string.editor_insert_data_successful),
-//                        Toast.LENGTH_SHORT).show();
-//            }
+            mDatabaseReference.push().setValue(ParkingUtils.valueToObject(values));
         } else {
             values.put(ManagerEntry.COLUMN_NAME_KEY, key);
             int rowsAffected = getContentResolver().update(mCurrentManagerUri, values, null, null);
@@ -179,7 +170,7 @@ public class ParkingActivity extends AppCompatActivity implements
                 Toast.makeText(this, getString(R.string.editor_update_data_failed),
                         Toast.LENGTH_SHORT).show();
             } else {
-                mDatabaseReference.child(key).setValue(FireBaseUtils.valueToObject(values));
+                mDatabaseReference.child(key).setValue(ParkingUtils.valueToObject(values));
                 Toast.makeText(this, getString(R.string.editor_update_data_successful),
                         Toast.LENGTH_SHORT).show();
             }

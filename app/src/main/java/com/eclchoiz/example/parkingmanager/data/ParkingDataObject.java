@@ -5,10 +5,6 @@ import com.google.firebase.database.Exclude;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by choiz on 2017-01-16.
- */
-
 public class ParkingDataObject {
 
     private String key;

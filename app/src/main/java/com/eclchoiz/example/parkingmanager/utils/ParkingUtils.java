@@ -17,7 +17,7 @@ import java.util.Map;
  * Created by choiz on 2017-01-17.
  */
 
-public class FireBaseUtils {
+public class ParkingUtils {
 
     public static boolean isNew(String key, Context context) {
         String selectionClause = ManagerEntry.COLUMN_NAME_KEY + " = ?";

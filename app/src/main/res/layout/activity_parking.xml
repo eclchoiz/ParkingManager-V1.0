@@ -19,7 +19,8 @@
             android:id="@+id/plateEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="번호판 앞부분" />
+            android:hint="번호판 앞부분"
+            android:lines="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -38,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="번호판 숫자 네자리"
-            android:inputType="number" />
+            android:inputType="number"
+            android:lines="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +58,8 @@
             android:id="@+id/partEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="소속" />
+            android:hint="소속"
+            android:lines="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -74,7 +77,8 @@
             android:id="@+id/regNumberEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="주차증 등록번호" />
+            android:hint="주차증 등록번호"
+            android:lines="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -93,7 +97,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="연락처"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:lines="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -111,34 +116,37 @@
             android:id="@+id/nameEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="이름" />
+            android:hint="이름"
+            android:lines="1" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/keyParkingStore"
-        android:visibility="gone"
-        android:clickable="false"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:visibility="gone" />
 
     <LinearLayout
-        android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
         <Button
             android:id="@+id/dbParkingCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
             android:onClick="dbParkingCancelClicked"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:text="@string/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="@string/cancel" />
+
         <Button
-            android:id="@+id/dbParkingCancelSave"
-            android:onClick="dbParkingSaveClicked"
-            android:enabled="false"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:text="@string/action_save"
+            android:id="@+id/dbParkingSave"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:enabled="false"
+            android:onClick="dbParkingSaveClicked"
+            android:text="@string/action_save" />
+    </LinearLayout>
 </LinearLayout>

@@ -7,10 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-/**
- * Created by Eclchoiz on 2017-01-03.
- */
-
 public class MmsDialogFragment extends DialogFragment {
 
     NoticeDialogListener mListener;

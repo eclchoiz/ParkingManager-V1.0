@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -36,7 +37,7 @@ import android.widget.Toast;
 
 import com.eclchoiz.example.parkingmanager.data.ParkingDataObject;
 import com.eclchoiz.example.parkingmanager.data.ParkingMangerContract.ManagerEntry;
-import com.eclchoiz.example.parkingmanager.utils.FireBaseUtils;
+import com.eclchoiz.example.parkingmanager.utils.ParkingUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -105,16 +106,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Log.e("dataSnapshot", snapshot.toString());
                     String key = snapshot.getKey();
-                    boolean result = FireBaseUtils.isNew(key, getApplicationContext());
+                    boolean result = ParkingUtils.isNew(key, getApplicationContext());
                     if (result) {
                         ParkingDataObject dataObject = snapshot.getValue(ParkingDataObject.class);
                         dataObject.setKey(key);
-                        FireBaseUtils.insertSqlLiteWithObject(dataObject, getApplicationContext());
-                        Log.e("MainActivity", "새로운 데이터 입니다." + key);
-                    } else {
-//                        Log.e("MainActivity", "중복된 데이터 입니다.");
+                        ParkingUtils.insertSqlLiteWithObject(dataObject, getApplicationContext());
                     }
                 }
             }
@@ -124,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 Log.w("MainActivity", "loadPost:onCancelled", databaseError.toException());
             }
         };
-//        mDatabaseReference.orderByValue().limitToLast(LIST_LIMIT).addValueEventListener(mValueEventListener);
-
         mDatabaseReference.orderByValue().addValueEventListener(mValueEventListener);
         getLoaderManager().initLoader(MANAGER_LOADER, null, this);
     }
@@ -134,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        // SearchView를 등록하고 리스너를 등록하기.
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -155,13 +149,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 return true;
             }
         });
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        /*switch (item.getItemId()) {
             case R.id.action_insert_dummy_data:
                 insertDummy();
                 return true;
@@ -171,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.action_import_db:
                 importDB();
                 return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -188,9 +181,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         values.put(ManagerEntry.COLUMN_NAME_NUMBER, "2288");
         values.put(ManagerEntry.COLUMN_NAME_REG_NUMBER, "e-74");
         values.put(ManagerEntry.COLUMN_NAME_PHONE_NUMBER, "010-9913-4131");
-        values.put(ManagerEntry.COLUMN_NAME_KEY, FireBaseUtils.insertFireBaseWithValues(values, mDatabaseReference));
-
-//        Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
+        values.put(ManagerEntry.COLUMN_NAME_KEY, ParkingUtils.insertFireBaseWithValues(values, mDatabaseReference));
     }
 
     // CSV 파일을 읽어 DB에 저장하기
@@ -233,9 +224,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 values.put(ManagerEntry.COLUMN_NAME_NAME, str[1]);
                 values.put(ManagerEntry.COLUMN_NAME_PLATE, str[2]);
                 values.put(ManagerEntry.COLUMN_NAME_NUMBER, str[3]);
-                values.put(ManagerEntry.COLUMN_NAME_KEY, FireBaseUtils.insertFireBaseWithValues(values, mDatabaseReference));
-
-//                Uri newUri = getContentResolver().insert(ManagerEntry.CONTENT_URI, values);
+                values.put(ManagerEntry.COLUMN_NAME_KEY, ParkingUtils.insertFireBaseWithValues(values, mDatabaseReference));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -336,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void selectMMS(int id) {
-
         /*
     <item>직원차량 주차구역 위반</item>     mms_wrong_place       0
     <item>직원차량 주차증없음</item>        mms_no_register_card  1
@@ -381,11 +369,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             ArrayList<String> messageParts = sms.divideMessage(mMessage);
             sms.sendMultipartTextMessage(mPhoneNumber, null, messageParts, null, null);
 
+            Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibe.vibrate(500);
+
             Toast.makeText(this, "MMS Sent to : " + mPhoneNumber, Toast.LENGTH_SHORT).show();
         }
     }
     // 문자 보내기 관련 끝
-
 
     // 전화걸기 및 문자 보내기 permission 체크
     @Override

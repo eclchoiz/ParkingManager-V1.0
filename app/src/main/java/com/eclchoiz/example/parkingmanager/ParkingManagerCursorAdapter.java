@@ -28,6 +28,7 @@ public class ParkingManagerCursorAdapter extends CursorAdapter {
         TextView partTextView = (TextView) view.findViewById(R.id.partText);
         TextView plateTextView = (TextView) view.findViewById(R.id.plateText);
         TextView numberTextView = (TextView) view.findViewById(R.id.numberText);
+        TextView phoneNumberTextView = (TextView) view.findViewById(R.id.phoneNumber);
         TextView keyTextView = (TextView) view.findViewById(R.id.keyParkTextView);
 
         ImageView phoneCallImageView = (ImageView) view.findViewById(R.id.phoneCall);
@@ -64,6 +65,7 @@ public class ParkingManagerCursorAdapter extends CursorAdapter {
         partTextView.setText(part);
         plateTextView.setText(plate);
         numberTextView.setText(number);
+        phoneNumberTextView.setText(phoneNumber);
         keyTextView.setText(key);
     }
 }

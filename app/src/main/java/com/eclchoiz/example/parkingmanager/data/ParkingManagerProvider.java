@@ -44,7 +44,6 @@ public class ParkingManagerProvider extends ContentProvider {
         Cursor cursor;
 
         int match = sUriMatcher.match(uri);
-//        Log.e("uriMatcher", "sUriMatcher : " + match);
         switch (match) {
             case MANAGER:
                 cursor = database.query(ManagerEntry.TABLE_NAME, projection, selection, selectionArgs,
@@ -60,7 +59,6 @@ public class ParkingManagerProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
-
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return cursor;

@@ -2,9 +2,9 @@
 
 <resources>
     <string-array name="mms_array">
-        <item>외부차량 장기주차</item>
+        <item>직원차량 주차구역 위반</item>
+        <item>직원차량 주차증없음</item>
         <item>불량 주차</item>
-        <!--<item>직원차량 주차증없음</item>-->
-        <!--<item>직원차량 주차구역 위반</item>-->
+        <!--<item>외부차량 장기주차</item>-->
     </string-array>
 </resources>

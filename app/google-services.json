@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "101844421491-866itmg3uu2b52jta5kl7u96di09d4g6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eclchoiz.example.parkingmanager",
+            "certificate_hash": "D157664FA24A0BCF7A87B4874BF5FD4E473DE102"
+          }
+        },
+        {
           "client_id": "101844421491-e5qh6ekc2s49ueh7k5v6tguhcc2070gd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
